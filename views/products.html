@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+    <link rel="stylesheet" href="../botstrap_css/bootstrap.min.css">
+    <link rel="stylesheet" href="../custom_css/test.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="../products_js/showProducts.js" defer></script>
+</head>
+
+<body>
+    <div class="navbar navbar-default navbar-static-top " role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <a href="/" class=" test navbar-brand">Test page</a>
+            </div>
+            <ul class="nav  navbar-right">
+                <li><a href="/admin" class="product navbar-brand">Admin</a></li>
+            </ul>
+
+        </div>
+    </div>
+    <div class="container ">
+        <h1>My Products</h1>
+
+        <div class="magazine">
+
+            <% docs.forEach(function(user){ %>
+
+                <div class="d2" data-picid="<%= user.text %>" data-pic_id="<%= user._id %>">
+                    <div class="inpdiv">
+                        <form action="/deleteitem" enctype="multipart/form-data" method="get">
+                            <input class="" name="iditem" type="hidden" value="<%= user._id %>">
+                            <input class="inp" type="submit" value="Delete">
+                        </form>
+                        <div>
+                            <button type="button" class="inp" data-toggle="modal" data-target="#myModal">Edit</button>
+                        </div>
+                    </div>
+                    <span class="productimg"> <img src=<%="../prd_images/" + user._id+ "/"+user.picPath %>>
+                        <h1>
+                        <%= user.text %>
+                        </h1>
+                    </span>
+                </div>
+                <% }); %>
+        </div>
+
+        <!-- The Modal -->
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Change img and name</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- Modal body -->
+                    <form action="/change" method="post" id="formtest">
+                        <div class="modal-body">
+                            <label for="files" class="btn btn-default">Update Image</label>
+                            <img id="blah" src="#" alt="your image" style="visibility:hidden;" />
+                            <input id="files" name="changeUploader" style="visibility:hidden;" type="file">
+                            <input id="changename" name="chengetext" type="text" class="btn btn-default" value="">
+                            <input id="changeid" name="changeid" type="text" class="btn btn-default">
+                        </div>
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <input type="submit" formenctype="multipart/form-data" class="btn btn-danger" value="Change">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
