@@ -10,7 +10,7 @@ const todoUser = require('./schema');
 var routs = require('./routes/routes');
 
 var app = express();
-// // es 3-@ nra hamara vor ejs-um ogtagorcenq html fayler
+
 app.engine('.html', require('ejs').__express);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
