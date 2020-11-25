@@ -17,10 +17,7 @@ app.set('view engine', 'html');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
 app.use(express.static(path.join(__dirname, 'public')));
-// app.use('/uploads', express.static('uploads'));
-
 app.use('/', routs);
 
 

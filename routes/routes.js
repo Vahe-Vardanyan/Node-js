@@ -1,3 +1,5 @@
+const { ObjectID } = require('mongodb');
+const UserModel = require('../schema');
 var express = require('express');
 var router = express.Router();
 var fs = require('fs');
@@ -6,12 +8,8 @@ var picNamePath = '';
 var changeNamePath = '';
 var multer = require('multer');
 var moment = require('moment');
-const UserModel = require('../schema');
 var rimraf = require("rimraf");
-
 var img_id = '';
-var img_idUp = '';
-
 
 
 var Storage = multer.diskStorage({
@@ -31,12 +29,8 @@ var Storage = multer.diskStorage({
     }
 });
 var upload = multer({ storage: Storage }).array("imgUploader", 3);
+var upload2 = multer({ storage: Storage }).array("changeUploader", 3);
 
-//----------------------
-
-
-
-//-----------------
 
 router.post("/upload", (req, res) => {
 
@@ -70,42 +64,17 @@ router.post("/upload", (req, res) => {
         }
     });
 });
-var a = "";
+
 
 router.post("/change", (req, res) => {
-    // a = req.body.changeid;
-    let image = new UserModel({
-        picPath: '',
-        text: '',
-        failsize: 0,
-        addDate: Date.now()
-    });
-    a = image._id.id.toString('hex');
-    var Storage2 = multer.diskStorage({
-        destination: function(req, file, callback) {
-            try {
-                if (!fs.existsSync(dir + a)) {
-                    fs.mkdirSync(dir + a) // add folder
-                }
-            } catch (err) {
-                console.error(err)
-            }
-            callback(null, dir + a);
-        },
-        filename: function(req, file, callback) {
-            changeNamePath = file.fieldname + "_" + Date.now() + "_" + file.originalname;
-            callback(null, changeNamePath);
-        }
-    });
-    var upload2 = multer({ storage: Storage2 }).array("changeUploader", 3);
+    img_id = req.query.id;
 
     upload2(req, res, function(err) {
         if (err) {
             res.end(err.message);
         } else {
 
-            UserModel.findByIdAndUpdate({ "_id": req.body.changeid }, { $set: { "text": req.body.chengetext, "picPath": changeNamePath } },
-
+            UserModel.findByIdAndUpdate({ "_id": req.body.changeid }, { $set: { "text": req.body.chengetext, "picPath": picNamePath } },
                 function(err, result) {
                     if (!err) {
                         res.redirect('/product');
@@ -118,19 +87,20 @@ router.post("/change", (req, res) => {
 });
 
 
-
-
 // Geters
-
-
 
 router.get('/product', async function(req, res) {
     await UserModel.find({}, (err, docs) => {
         if (err) {
             res.end(err);
         } else {
+            // if (docs.length == 0) {
+
+            //     res.redirect('/');
+            // } else {
             imgname = "req.bodykj";
             res.render('products.html', { docs, imgname });
+            // }
         }
     });
 });
@@ -157,18 +127,20 @@ router.get('/admin', function(req, res) {
 });
 
 
-
 router.get('/deleteitem', async function(req, res) {
-
-    await UserModel.deleteOne({ _id: req.query.iditem }, function(err, obj) {
+    await UserModel.deleteOne({ _id: req.query.iditem }, async function(err, obj) {
         if (!err) {
-            res.redirect('/product');
+            await rimraf(dir + req.query.iditem, function(ex) {
+                if (!ex) {
+                    res.redirect('/product');
+                } else {
+                    res.end(ex);
+                }
+            });
         } else {
             res.end(err);
         }
     });
-    await rimraf(dir + req.query.iditem, function() {});
-
 });
 
 

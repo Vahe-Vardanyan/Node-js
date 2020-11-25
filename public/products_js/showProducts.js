@@ -1,6 +1,3 @@
-// $(document).ready(function() {
-// });
-
 $('input[name=imgUploader]').on('change', function() {
 
     const size = (this.files[0].size / 1024 / 1024).toFixed(2);
@@ -11,7 +8,7 @@ $('input[name=imgUploader]').on('change', function() {
 
 
 var imgname = "";
-$(".d2").click(function() {
+$(".d2").click(function(e) {
     let fid = $(this).attr("data-pic_id")
     $("#formtest").attr("action", `/change?id=${fid}`);
 
